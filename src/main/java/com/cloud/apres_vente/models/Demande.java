@@ -73,6 +73,16 @@ public class Demande implements Serializable {
     private  boolean deleted;
     @Column(name="deleted_at")
     private Date deleted_at;
+    private String caracteristique;
+    private String composant_tech;
+    private String localisation;
+    private String nom_resp_admin;
+    private String tel_admin_email;
+    private String tel_tech_email;
+    private String version;
+    private String region;
+    private String objectifs;
+    
     
 
     public Demande() {
@@ -83,7 +93,79 @@ public class Demande implements Serializable {
     }
     
 
-    public boolean isDeleted() {
+    public String getCaracteristique() {
+		return caracteristique;
+	}
+
+	public String getObjectifs() {
+		return objectifs;
+	}
+
+	public void setObjectifs(String objectifs) {
+		this.objectifs = objectifs;
+	}
+
+	public void setCaracteristique(String caracteristique) {
+		this.caracteristique = caracteristique;
+	}
+
+	public String getComposant_tech() {
+		return composant_tech;
+	}
+
+	public void setComposant_tech(String composant_tech) {
+		this.composant_tech = composant_tech;
+	}
+
+	public String getLocalisation() {
+		return localisation;
+	}
+
+	public void setLocalisation(String localisation) {
+		this.localisation = localisation;
+	}
+
+	public String getNom_resp_admin() {
+		return nom_resp_admin;
+	}
+
+	public void setNom_resp_admin(String nom_resp_admin) {
+		this.nom_resp_admin = nom_resp_admin;
+	}
+
+	public String getTel_admin_email() {
+		return tel_admin_email;
+	}
+
+	public void setTel_admin_email(String tel_admin_email) {
+		this.tel_admin_email = tel_admin_email;
+	}
+
+	public String getTel_tech_email() {
+		return tel_tech_email;
+	}
+
+	public void setTel_tech_email(String tel_tech_email) {
+		this.tel_tech_email = tel_tech_email;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public boolean isDeleted() {
 		return deleted;
 	}
 

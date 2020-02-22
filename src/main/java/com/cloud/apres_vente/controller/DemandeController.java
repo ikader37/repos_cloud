@@ -48,7 +48,7 @@ public class DemandeController {
 	 * @return
 	 */
 	public List<Demande> listDemande(){
-		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande from demande";
+		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande,caracteristique,composant_tech,localisation,nom_resp_admin,objectifs,region,tel_admin_email,tel_tech_email,version from demande";
 		List<Demande> listDem=new ArrayList<>();
 		try {
 			Statement st=cc.createStatement();
@@ -62,6 +62,13 @@ public class DemandeController {
 				d.setDeleted(rs.getBoolean("deleted"));
 				d.setDeleted_at(rs.getDate("deleted_at"));
 				d.setEtat(rs.getString("etat"));
+				d.setCaracteristique(rs.getString("caracteristique"));
+				d.setComposant_tech(rs.getString("composant_tech"));
+				d.setLocalisation(rs.getString("localisation"));
+				d.setRegion(rs.getString("region"));
+				d.setVersion(rs.getString("version"));
+				d.setTel_admin_email(rs.getString("tel_admin_email"));
+				d.setTel_tech_email(rs.getString("tel_admin_email"));
 				listDem.add(d);
 			}
 		}catch(Exception ex) {
@@ -72,7 +79,14 @@ public class DemandeController {
 	
 	@GetMapping("/addDemande")
 	@ResponseBody
-	public JSONPObject addDemande(@RequestParam(name="idservice") Integer idservice,@RequestParam(name="idpersonne") Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="idelementbesoin") List<Integer> idelements) {
+	public JSONPObject addDemande(@RequestParam(name="idservice",required=true) Integer idservice,
+			@RequestParam(name="idpersonne",required=false) Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="etat",required=false) String etat,
+			@RequestParam(name="caracteristique",required=false) String caracteristique,@RequestParam(name="composant_tech",required=false) String composant_tech,@RequestParam(name="localisation",required=false) String localisation,
+			@RequestParam(name="nom_responsable_tech",required=false) String nom_resp_tech,@RequestParam(name="nom_resp_admin",required=false) String nom_resp_admin,@RequestParam(name="objectifs",required=false) String objectifs,
+			@RequestParam(name="tel_admin_email",required=false) String tel_admin_email,@RequestParam(name="tel_tech_admin_email",required=false) String tel_tech_admin_email,@RequestParam(name="version",required=false) String version,
+			@RequestParam(name="region",required=false) String region,
+			@RequestParam(name="idelementbesoin",required=false) List<Integer> idelements
+			) {
 		Demande dema=new Demande();
 		dema.setEtat("Debut");
 		Service ser=new Service();
@@ -82,25 +96,33 @@ public class DemandeController {
 		
 		List<ElementDeBesoin> elementB=new ArrayList<>();
 		
-		for (Integer idEl : idelements) {
-			ElementDeBesoin b=new ElementDeBesoin();
-			b.setIdElBesoin(idEl);
-			elementB.add(b);
-		}
+//		for (Integer idEl : idelements) {
+//			ElementDeBesoin b=new ElementDeBesoin();
+//			b.setIdElBesoin(idEl);
+//			elementB.add(b);
+//		}
+		
 		dema.setLibelle(libelle);
 		dema.setDateDemande(new Date());
 		dema.setIdService(ser);
 		dema.setIdPersonne(p);
 		dema.setElementDeBesoinList(elementB);
+		dema.setComposant_tech(composant_tech);
+		dema.setCaracteristique(caracteristique);
+		dema.setEtat(etat);
+		dema.setTel_admin_email(tel_admin_email);
+		dema.setTel_tech_email(tel_tech_admin_email);
+		dema.setVersion(version);
+		dema.setRegion(region);
 		
 		
 		return new JSONPObject("demande", demaDao.save(dema));
 	}
 	
-	@GetMapping("/listDemandeAll")
+	@RequestMapping("/listDemandeAll")
 	@ResponseBody
 	public JSONPObject listDemandeAll(){
-		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande from demande";
+		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande,caracteristique,composant_tech,localisation,nom_resp_admin,objectifs,region,tel_admin_email,tel_tech_email,version from demande";
 		List<Demande> listDem=new ArrayList<>();
 		try {
 			Statement st=cc.createStatement();
@@ -114,6 +136,13 @@ public class DemandeController {
 				d.setDeleted(rs.getBoolean("deleted"));
 				d.setDeleted_at(rs.getDate("deleted_at"));
 				d.setEtat(rs.getString("etat"));
+				d.setCaracteristique(rs.getString("caracteristique"));
+				d.setComposant_tech(rs.getString("composant_tech"));
+				d.setLocalisation(rs.getString("localisation"));
+				d.setRegion(rs.getString("region"));
+				d.setVersion(rs.getString("version"));
+				d.setTel_admin_email(rs.getString("tel_admin_email"));
+				d.setTel_tech_email(rs.getString("tel_admin_email"));
 				listDem.add(d);
 			}
 		}catch(Exception ex) {
@@ -142,7 +171,7 @@ public class DemandeController {
 		Personne personne=new Personne();
 		List<Demande> listDem=new ArrayList<>();
 		
-		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande from demande where id_personne='"+idpersonne+"'";
+		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande,caracteristique,composant_tech,localisation,nom_resp_admin,objectifs,region,tel_admin_email,tel_tech_email,version from demande where id_personne='"+idpersonne+"'";
 		try {
 			Statement st=cc.createStatement();
 			
@@ -155,6 +184,13 @@ public class DemandeController {
 				d.setDeleted(rs.getBoolean("deleted"));
 				d.setDeleted_at(rs.getDate("deleted_at"));
 				d.setEtat(rs.getString("etat"));
+				d.setCaracteristique(rs.getString("caracteristique"));
+				d.setComposant_tech(rs.getString("composant_tech"));
+				d.setLocalisation(rs.getString("localisation"));
+				d.setRegion(rs.getString("region"));
+				d.setVersion(rs.getString("version"));
+				d.setTel_admin_email(rs.getString("tel_admin_email"));
+				d.setTel_tech_email(rs.getString("tel_admin_email"));
 				listDem.add(d);
 			}
 			rs.close();
@@ -176,12 +212,22 @@ public class DemandeController {
 	}
 	
 	@GetMapping("/updateDemande")
-	public JSONPObject updateDemande(@RequestParam(name="iddemande") Integer iddemande,@RequestParam(name="idservice") Integer idservice,@RequestParam(name="idpersonne") Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="etat") String etat,@RequestParam(name="idelementbesoin",required=false) List<Integer> idelements) {
+	public JSONPObject updateDemande(@RequestParam(name="iddemande",required=true) Integer iddemande,@RequestParam(name="idservice",required=true) Integer idservice,
+			@RequestParam(name="idpersonne",required=false) Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="etat",required=false) String etat,
+			@RequestParam(name="caracteristique",required=false) String caracteristique,@RequestParam(name="composant_tech",required=false) String composant_tech,@RequestParam(name="localisation",required=false) String localisation,
+			@RequestParam(name="nom_responsable_tech",required=false) String nom_resp_tech,@RequestParam(name="nom_resp_admin",required=false) String nom_resp_admin,@RequestParam(name="objectifs",required=false) String objectifs,
+			@RequestParam(name="tel_admin_email",required=false) String tel_admin_email,@RequestParam(name="tel_tech_admin_email",required=false) String tel_tech_admin_email,@RequestParam(name="version",required=false) String version,
+			@RequestParam(name="region",required=false) String region,
+			@RequestParam(name="idelementbesoin",required=false) List<Integer> idelements) {
 		Demande dem=new Demande();
 		Optional<Demande> optionDemande=demaDao.findById(iddemande);
 		Demande dema=new Demande();
-		dema=optionDemande.get();
-		String sql="update demande set libelle='"+libelle+"' , id_service='"+idservice+"', etat='"+etat+"' where id_demande='"+iddemande+"';";
+		//dema=optionDemande.get();
+		String sql="update demande set libelle='"+libelle+"' ,"
+				+ "region ='"+region+"', tel_admin_email='"+tel_admin_email+"',"
+				+ "nom_responsable_tech='"+nom_resp_tech+"',"
+				+ ""
+				+ " id_service='"+idservice+"', etat='"+etat+"' where id_demande='"+iddemande+"';";
 		//sql+="update demande set id_service='"+idservice+"' where id_demande='"+iddemande+"';";
 		//sql+="update demande set etat='"+etat+"' where id_demande='"+iddemande+"';";
 		try {
