@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cloud.apres_vente.dao.DemandeDao;
 import com.cloud.apres_vente.dao.ElementDeBesoinDao;
@@ -27,7 +28,7 @@ import com.cloud.apres_vente.models.Service;
 import com.cloud.apres_vente.utils.SingletonConnection;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
-@Controller
+@RestController
 @RequestMapping("/demande")
 public class DemandeController {
 
@@ -41,6 +42,33 @@ public class DemandeController {
 	private ElementDeBesoinDao elBDao;
 	
 	Connection cc=SingletonConnection.getConnecter();
+	
+	/**
+	 * Fonction permettant de retourner toutes les demandes enregistrees
+	 * @return
+	 */
+	public List<Demande> listDemande(){
+		String sql="select id_demande,libelle,deleted,deleted_at,etat,id_service,date_demande from demande";
+		List<Demande> listDem=new ArrayList<>();
+		try {
+			Statement st=cc.createStatement();
+			
+			ResultSet rs=st.executeQuery(sql);
+			while(rs.next()) {
+				Demande d=new Demande();
+				d.setIdDemande(rs.getInt("id_demande"));
+				d.setDateDemande(rs.getDate("date_demande"));
+				d.setLibelle(rs.getString("libelle"));
+				d.setDeleted(rs.getBoolean("deleted"));
+				d.setDeleted_at(rs.getDate("deleted_at"));
+				d.setEtat(rs.getString("etat"));
+				listDem.add(d);
+			}
+		}catch(Exception ex) {
+				
+			}
+		return listDem;
+	}
 	
 	@GetMapping("/addDemande")
 	@ResponseBody
@@ -129,6 +157,9 @@ public class DemandeController {
 				d.setEtat(rs.getString("etat"));
 				listDem.add(d);
 			}
+			rs.close();
+			st.close();
+			
 			/*Optional<Personne> p=perDao.findById(idpersonne);
 			personne=p.get();
 			
@@ -140,16 +171,34 @@ public class DemandeController {
 			// TODO: handle exception
 			return null;*/
 		}
+		
 		return new JSONPObject("listDemandePer",listDem);
 	}
 	
-	public Demande updateDemande(@RequestParam(name="iddemande") Integer iddemande,@RequestParam(name="idservice") Integer idservice,@RequestParam(name="idpersonne") Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="idelementbesoin") List<Integer> idelements) {
+	@GetMapping("/updateDemande")
+	public JSONPObject updateDemande(@RequestParam(name="iddemande") Integer iddemande,@RequestParam(name="idservice") Integer idservice,@RequestParam(name="idpersonne") Integer idpersonne,@RequestParam(name="libelle") String libelle,@RequestParam(name="etat") String etat,@RequestParam(name="idelementbesoin",required=false) List<Integer> idelements) {
 		Demande dem=new Demande();
 		Optional<Demande> optionDemande=demaDao.findById(iddemande);
 		Demande dema=new Demande();
 		dema=optionDemande.get();
+		String sql="update demande set libelle='"+libelle+"' , id_service='"+idservice+"', etat='"+etat+"' where id_demande='"+iddemande+"';";
+		//sql+="update demande set id_service='"+idservice+"' where id_demande='"+iddemande+"';";
+		//sql+="update demande set etat='"+etat+"' where id_demande='"+iddemande+"';";
+		try {
+			Statement st=cc.createStatement();
+			int i=(int) st.executeLargeUpdate(sql);
+			if(i>0) {
+				return new JSONPObject("ok",true);
+			}else {
+				return new JSONPObject("ok",false);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("ERREUR:"+e.getLocalizedMessage());
+			return new JSONPObject("ok",false);
+		}
 		
-		Service ser=new Service();
+		/*Service ser=new Service();
 		ser.setIdService(idservice);
 		Personne p=new Personne();
 		p.setIdPersonne(idpersonne);
@@ -168,8 +217,9 @@ public class DemandeController {
 		dema.setElementDeBesoinList(elementB);
 		
 		dema.setIdDemande(iddemande);
+		*/
 		
-		return demaDao.save(dema);
+		//return demaDao.save(dema);
 	}
 	
 	@GetMapping("/deletedemande")
@@ -199,7 +249,7 @@ public class DemandeController {
 	@GetMapping("/listDemandeActuel")
 	@ResponseBody
 	public JSONPObject demandeActuel(){
-		List<Demande> listAl=listDemandeAll();
+		List<Demande> listAl=listDemande();
 		List<Demande> demadeNoDel=new ArrayList<>();
 		for(Demande d:listAl) {
 			if(!d.isDeleted()) {
@@ -213,7 +263,7 @@ public class DemandeController {
 	@GetMapping("/listDemandeDel")
 	@ResponseBody
 	public JSONPObject demandeDeleted(){
-		List<Demande> listAl=listDemandeAll();
+		List<Demande> listAl=listDemande();
 		List<Demande> demadeDel=new ArrayList<>();
 		for(Demande d:listAl) {
 			if(d.isDeleted()) {
