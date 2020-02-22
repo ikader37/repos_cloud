@@ -14,10 +14,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -27,46 +27,47 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author ilboudo
  */
 @Entity
-@Table(name = "SERVICE")
+@Table(name = "ELEMENT_DE_BESOIN")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Service.findAll", query = "SELECT s FROM Service s")
-    , @NamedQuery(name = "Service.findByIdService", query = "SELECT s FROM Service s WHERE s.idService = :idService")
-    , @NamedQuery(name = "Service.findByLibelle", query = "SELECT s FROM Service s WHERE s.libelle = :libelle")
-    , @NamedQuery(name = "Service.findByDescription", query = "SELECT s FROM Service s WHERE s.description = :description")})
-public class Service implements Serializable {
+    @NamedQuery(name = "ElementDeBesoin.findAll", query = "SELECT e FROM ElementDeBesoin e")
+    , @NamedQuery(name = "ElementDeBesoin.findByIdElBesoin", query = "SELECT e FROM ElementDeBesoin e WHERE e.idElBesoin = :idElBesoin")
+    , @NamedQuery(name = "ElementDeBesoin.findByLibelle", query = "SELECT e FROM ElementDeBesoin e WHERE e.libelle = :libelle")
+    , @NamedQuery(name = "ElementDeBesoin.findByValeur", query = "SELECT e FROM ElementDeBesoin e WHERE e.valeur = :valeur")
+    , @NamedQuery(name = "ElementDeBesoin.findByDescription", query = "SELECT e FROM ElementDeBesoin e WHERE e.description = :description")})
+public class ElementDeBesoin implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_SERVICE")
-    private Integer idService;
+    @Column(name = "ID_EL_BESOIN")
+    private Integer idElBesoin;
     @Column(name = "LIBELLE")
     private String libelle;
+    @Column(name = "VALEUR")
+    private String valeur;
     @Column(name = "DESCRIPTION")
     private String description;
-    @OneToMany(mappedBy = "idService")
-    private List<Plainte> plainteList;
+    @ManyToMany(mappedBy = "elementDeBesoinList")
+    private List<Demande> demandeList;
     @JoinColumn(name = "ID_BESOIN", referencedColumnName = "ID_BESOIN")
     @ManyToOne
     private Besoin idBesoin;
-    @OneToMany(mappedBy = "idService")
-    private List<Demande> demandeList;
 
-    public Service() {
+    public ElementDeBesoin() {
     }
 
-    public Service(Integer idService) {
-        this.idService = idService;
+    public ElementDeBesoin(Integer idElBesoin) {
+        this.idElBesoin = idElBesoin;
     }
 
-    public Integer getIdService() {
-        return idService;
+    public Integer getIdElBesoin() {
+        return idElBesoin;
     }
 
-    public void setIdService(Integer idService) {
-        this.idService = idService;
+    public void setIdElBesoin(Integer idElBesoin) {
+        this.idElBesoin = idElBesoin;
     }
 
     public String getLibelle() {
@@ -75,6 +76,14 @@ public class Service implements Serializable {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public String getValeur() {
+        return valeur;
+    }
+
+    public void setValeur(String valeur) {
+        this.valeur = valeur;
     }
 
     public String getDescription() {
@@ -86,12 +95,12 @@ public class Service implements Serializable {
     }
 
     @XmlTransient
-    public List<Plainte> getPlainteList() {
-        return plainteList;
+    public List<Demande> getDemandeList() {
+        return demandeList;
     }
 
-    public void setPlainteList(List<Plainte> plainteList) {
-        this.plainteList = plainteList;
+    public void setDemandeList(List<Demande> demandeList) {
+        this.demandeList = demandeList;
     }
 
     public Besoin getIdBesoin() {
@@ -102,30 +111,21 @@ public class Service implements Serializable {
         this.idBesoin = idBesoin;
     }
 
-    @XmlTransient
-    public List<Demande> getDemandeList() {
-        return demandeList;
-    }
-
-    public void setDemandeList(List<Demande> demandeList) {
-        this.demandeList = demandeList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idService != null ? idService.hashCode() : 0);
+        hash += (idElBesoin != null ? idElBesoin.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Service)) {
+        if (!(object instanceof ElementDeBesoin)) {
             return false;
         }
-        Service other = (Service) object;
-        if ((this.idService == null && other.idService != null) || (this.idService != null && !this.idService.equals(other.idService))) {
+        ElementDeBesoin other = (ElementDeBesoin) object;
+        if ((this.idElBesoin == null && other.idElBesoin != null) || (this.idElBesoin != null && !this.idElBesoin.equals(other.idElBesoin))) {
             return false;
         }
         return true;
@@ -133,7 +133,7 @@ public class Service implements Serializable {
 
     @Override
     public String toString() {
-        return "bb.Service[ idService=" + idService + " ]";
+        return "bb.ElementDeBesoin[ idElBesoin=" + idElBesoin + " ]";
     }
     
 }

@@ -22,12 +22,12 @@ public class MessageController {
 	
 	//@PostMapping("/addmsge")
 	@GetMapping("/addmsge")
-	public Message addMessage(@RequestParam(name="contenu",required=true) String contenu,@RequestParam(name="idpersonne",required=true) int idpersonne) {
+	public Message addMessage(@RequestParam(name="contenu",required=true) String contenu,@RequestParam(name="idpersonne",required=true) Integer idpersonne) {
 		Message msge=new Message();
 		msge.setContenu(contenu);
 		Personne p=new Personne();
-		p.setIdpersonne(idpersonne);
-		msge.setIdpersonne(p);
+		p.setIdPersonne(idpersonne);
+		msge.setIdPersonne(p);
 		
 		boolean b=false;//msgeDao.addMessage(msge);
 		return msgeDao.save(msge);
@@ -38,8 +38,8 @@ public class MessageController {
 		Message msge=new Message();
 		msge.setContenu(contenu);
 		Personne p=new Personne();
-		p.setIdpersonne(idpersonne);
-		msge.setIdpersonne(p);
+		p.setIdPersonne(idpersonne);
+		msge.setIdPersonne(p);
 		System.out.print("Contenu:"+msge.getContenu());
 		boolean b=false;//=msgeDao.addMessage(msge);
 		
