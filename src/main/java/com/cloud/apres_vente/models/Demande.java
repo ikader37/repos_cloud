@@ -67,6 +67,13 @@ public class Demande implements Serializable {
     @JoinColumn(name = "ID_PERSONNE", referencedColumnName = "ID_PERSONNE")
     @ManyToOne
     private Personne idPersonne;
+    @Column(name="etat")
+    private String etat;
+    @Column(name="deleted")
+    private  boolean deleted;
+    @Column(name="deleted_at")
+    private Date deleted_at;
+    
 
     public Demande() {
     }
@@ -74,8 +81,33 @@ public class Demande implements Serializable {
     public Demande(Integer idDemande) {
         this.idDemande = idDemande;
     }
+    
 
-    public Integer getIdDemande() {
+    public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeleted_at() {
+		return deleted_at;
+	}
+
+	public void setDeleted_at(Date deleted_at) {
+		this.deleted_at = deleted_at;
+	}
+
+	public String getEtat() {
+		return etat;
+	}
+
+	public void setEtat(String etat) {
+		this.etat = etat;
+	}
+
+	public Integer getIdDemande() {
         return idDemande;
     }
 
